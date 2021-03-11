@@ -1,8 +1,9 @@
 package com.luxoft.ushych.controllers;
 
-import com.luxoft.ushych.view.MenuBar;
-import com.luxoft.ushych.view.SignScreen;
-import com.luxoft.ushych.view.TableList;
+import com.luxoft.ushych.models.User;
+import com.luxoft.ushych.view_models.MenuBar;
+import com.luxoft.ushych.view_models.SignScreen;
+import com.luxoft.ushych.view_models.TableList;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -15,15 +16,26 @@ import org.eclipse.swt.widgets.Table;
 
 public class ViewController {
 
-    private final Display display;
-    private final Shell shell;
+    private UserController userController;
+    private static ViewController viewController;
 
-    public ViewController() {
+    private Display display;
+    private Shell shell;
+
+    private ViewController() {
         display = new Display();
         shell = new Shell(display, SWT.CLOSE | SWT.TITLE | SWT.MIN);
+        userController = new UserController();
         shell.setText("JFace homework log");
         shell.setSize(800, 400);
         shell.setLayout(new FillLayout());
+    }
+
+    public static ViewController getInstance() {
+        if (viewController == null) {
+            viewController = new ViewController();
+        }
+        return viewController;
     }
 
     public void show() {
@@ -43,7 +55,8 @@ public class ViewController {
         display.dispose();
     }
 
-
-      
+    public void addUser(User user) {
+        userController.addUser(user);
+    }
 
 }

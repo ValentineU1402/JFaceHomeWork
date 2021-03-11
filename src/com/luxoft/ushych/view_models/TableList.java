@@ -1,4 +1,4 @@
-package com.luxoft.ushych.view;
+package com.luxoft.ushych.view_models;
 
 import java.util.stream.Stream;
 

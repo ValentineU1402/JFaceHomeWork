@@ -3,6 +3,7 @@
 *.war
 *.ear
 
+
 # Eclipse
 .classpath
 .project
@@ -19,3 +20,7 @@ bin/
 build/
 /bin1/
 java/build/**
+META-INF/
+OSGI-INF/
+/plugin.xml
+/build.properties

@@ -1,4 +1,4 @@
-package com.luxoft.ushych.view_models;
+package com.luxoft.ushych.ui;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;

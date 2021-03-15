@@ -1,9 +1,9 @@
-package com.luxoft.ushych.view_models;
+package com.luxoft.ushych.ui;
 
 import com.luxoft.ushych.controllers.ViewController;
-import com.luxoft.ushych.models.User;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -18,11 +18,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
-public class SignScreen {
+public class SignScreen extends Composite {
 
     private ViewController viewController;
-
-    private Composite composite;
 
     private Text textName;
     private Text textGroup;
@@ -33,23 +31,22 @@ public class SignScreen {
     private Button deleteButton;
     private Button cancelButton;
 
-    public SignScreen(Composite parent) {
-        composite = new Composite(parent, SWT.RESIZE);
-        viewController = ViewController.getInstance();
+    public SignScreen(SashForm parent, ViewController controller) {
+        super(parent, SWT.RESIZE);
+        viewController = controller;
         createComposite();
     }
 
     private void createComposite() {
-        composite.setLayout(new GridLayout(1, true));
-        GridData gridDate = new GridData(GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL);
-        createNameField().setLayoutData(gridDate);
-        createGroupField().setLayoutData(gridDate);
-        createCheckField().setLayoutData(gridDate);
-        createButtonField().setLayoutData(gridDate);
+        this.setLayout(new FillLayout(SWT.VERTICAL | SWT.FILL));
+        createNameField();
+        createGroupField();
+        createCheckField();
+        createButtonField();
     }
 
     private Group createNameField() {
-        Group nameField = new Group(composite, SWT.NONE);
+        Group nameField = new Group(this, SWT.NONE);
         nameField.setLayout(new GridLayout(2, true));
         Label labelName = new Label(nameField, SWT.NONE);
         labelName.setText("Name");
@@ -60,7 +57,7 @@ public class SignScreen {
     }
 
     private Group createGroupField() {
-        Group groupField = new Group(composite, SWT.NONE);
+        Group groupField = new Group(this, SWT.NONE);
         groupField.setLayout(new GridLayout(2, true));
         Label labelName = new Label(groupField, SWT.NONE);
         labelName.setText("Group");
@@ -72,18 +69,18 @@ public class SignScreen {
     }
 
     private Group createCheckField() {
-        Group checkField = new Group(composite, SWT.NONE);
+        Group checkField = new Group(this, SWT.NONE);
         checkField.setLayout(new GridLayout(2, true));
         Label labelName = new Label(checkField, SWT.NONE);
         labelName.setText("SWT task done");
         labelName.setLayoutData(getCenterGridDate());
         buttonCheck = new Button(checkField, SWT.CHECK);
-        checkField.setLayoutData(getEndGridDate());
+        buttonCheck.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
         return checkField;
     }
 
     private Group createButtonField() {
-        Group buttonField = new Group(composite, SWT.NONE);
+        Group buttonField = new Group(this, SWT.NONE);
         buttonField.setLayout(new FillLayout());
         newButton = createButtonNew(buttonField);
         saveButton = createButtonSave(buttonField);
@@ -97,14 +94,14 @@ public class SignScreen {
     private Button createButtonNew(Composite parent) {
         Button result = new Button(parent, SWT.PUSH);
         result.setText("New");
-        result.addSelectionListener(getSelectionListenerForNew());
+        result.addSelectionListener(getSelectionListenerForCancel());
         return result;
     }
 
     private Button createButtonSave(Composite parent) {
         Button result = new Button(parent, SWT.PUSH);
         result.setText("Save");
-      //  result.addSelectionListener(getSelectionListenerForSave());
+        result.addSelectionListener(getSelectionListenerForSave());
         return result;
     }
 
@@ -115,12 +112,12 @@ public class SignScreen {
         return result;
     }
 
-    private SelectionListener getSelectionListenerForNew() {
+    private SelectionListener getSelectionListenerForSave() {
         return new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent arg0) {
-                User user = new User(textName.getText(), textGroup.getText(), buttonCheck.getSelection());
-                viewController.addUser(user);
+                viewController.addUserParameters(textName.getText(), Integer.parseInt(textGroup.getText()),
+                        buttonCheck.getSelection());
             }
 
         };
@@ -157,10 +154,6 @@ public class SignScreen {
     }
 
     private GridData getEndGridDate() {
-        return new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
-    }
-
-    public Composite getComposite() {
-        return composite;
+        return new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL);
     }
 }

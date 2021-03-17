@@ -3,20 +3,22 @@ package com.luxoft.ushych.models;
 public class User {
 
     private String name;
-    private int group;
+    private String group;
     private boolean taskDone;
 
-    public User(String name, int group, boolean taskDone) {
+    public User(String name, String group, boolean taskDone) {
         this.name = name;
         this.group = group;
         this.taskDone = taskDone;
     }
 
+
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + group;
+        result = prime * result + ((group == null) ? 0 : group.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + (taskDone ? 1231 : 1237);
         return result;
@@ -31,7 +33,10 @@ public class User {
         if (getClass() != obj.getClass())
             return false;
         User other = (User) obj;
-        if (group != other.group)
+        if (group == null) {
+            if (other.group != null)
+                return false;
+        } else if (!group.equals(other.group))
             return false;
         if (name == null) {
             if (other.name != null)
@@ -47,7 +52,7 @@ public class User {
         return name;
     }
 
-    public int getGroup() {
+    public String getGroup() {
         return group;
     }
 

@@ -1,6 +1,8 @@
 package com.luxoft.ushych.ui;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -47,7 +49,7 @@ public class SignScreen extends Composite {
         fields.put("Group", SWT.NONE);
         fields.put("SWT task done", SWT.CHECK);
         createGroupField(fields);
-        String[] btnTitles = { "New", "Save", "Edit", "Cansel" };
+        String[] btnTitles = { "New", "Save", "Delete", "Cansel" };
         createGroupButtons(btnTitles);
     }
 
@@ -59,7 +61,7 @@ public class SignScreen extends Composite {
                 createTextField(entry.getKey());
             } else {
                 new Button(groupFields, SWT.CHECK)
-                        .setLayoutData(new GridData(GridData.FILL, GridData.FILL, false, false));
+                        .setLayoutData(new GridData(GridData.END, GridData.FILL, false, false));
             }
         });
         // groupFields.setLayout(new FillLayout(SWT.VERTICAL));
@@ -133,19 +135,25 @@ public class SignScreen extends Composite {
 
     private void newOrder() {
         Control[] controls = groupFields.getChildren();
-        String[] listContents = new String[controls.length];
+        List<String> listContents = new ArrayList<>();
         for (int i = 0; i < controls.length; i++) {
             if (controls[i] != null) {
                 if (controls[i] instanceof Text) {
-                    listContents[i] = ((Text) controls[i]).getText();
+                    listContents.add(((Text) controls[i]).getText());
+                    ((Text) controls[i]).setText("");
+
                 }
                 if (controls[i] instanceof Button) {
-                    listContents[i] = String.valueOf(((Button) controls[i]).getSelection());
+                    listContents.add(String.valueOf(((Button) controls[i]).getSelection()));
+                    ((Button) controls[i]).setText("");
                 }
             }
         }
-        viewController.addUserParameters(listContents[1], Integer.parseInt(listContents[0]),
-                Boolean.parseBoolean(listContents[2]));
+        viewController.addUserParameters(listContents.get(0), listContents.get(1), listContents.get(2));
+    }
+
+    private void doEmptyField() {
+
     }
 
     private Listener getFilterDigitListener() {

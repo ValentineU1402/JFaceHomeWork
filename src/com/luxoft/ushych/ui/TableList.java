@@ -1,51 +1,45 @@
 package com.luxoft.ushych.ui;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import com.luxoft.ushych.controllers.ViewController;
 import com.luxoft.ushych.models.User;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
-public class TableList extends Composite implements IStructuredContentProvider {
+public class TableList extends Composite {
+
+    private final int FIRST_COLUMN_WEIGHT = 300;
+    private final int SECOND_COLUMN_WEIGHT = FIRST_COLUMN_WEIGHT / 2;
+    private final int THIRD_COLUMN_WEIGHT = SECOND_COLUMN_WEIGHT / 2;
 
     private ViewController controller;
 
     private TableViewer viewer;
 
     public TableList(SashForm parent, ViewController controller) {
-        super(parent.getParent(), SWT.BORDER);
+        super(parent.getParent(), SWT.VERTICAL);
         this.controller = controller;
-        viewer = new TableViewer(parent, SWT.BORDER | SWT.V_SCROLL);
-        // viewer.setContentProvider(ArrayContentProvider.getInstance());
-        // viewer.setInput(getElements(viewer));
-        String[] titlesColumn = { "Name", "Group", "SWT done" };
+        viewer = new TableViewer(parent, SWT.FILL);
 
-        //
-        // Stream.of(titlesColumn)
-        // .forEach(title -> new TableViewerColumn(viewer, SWT.NONE).getColumn().setText(title));
-        TableViewerColumn first = new TableViewerColumn(viewer, SWT.NONE);
-        first.getColumn().setWidth(200);
-        first.getColumn().setText("Name");
-        first.setLabelProvider(new ColumnLabelProvider());
-        TableViewerColumn second = new TableViewerColumn(viewer, SWT.NONE);
-        second.getColumn().setWidth(100);
-        second.getColumn().setText("Group");
-        second.setLabelProvider(new ColumnLabelProvider());
-        TableViewerColumn three = new TableViewerColumn(viewer, SWT.NONE);
-        three.getColumn().setWidth(90);
-        three.getColumn().setText("SWT done");
-        three.setLabelProvider(new ColumnLabelProvider());
+        Map<String, Integer> titlesColumn = new LinkedHashMap<>();
+        titlesColumn.put("Name", FIRST_COLUMN_WEIGHT);
+        titlesColumn.put("Group", SECOND_COLUMN_WEIGHT);
+        titlesColumn.put("SWT done", THIRD_COLUMN_WEIGHT);
 
+        titlesColumn.entrySet().forEach(entry -> createColumn(entry.getKey(), entry.getValue()));
+        viewer.getTable().setLayoutData(new GridData(GridData.CENTER, GridData.CENTER, false, true));
         Table table = viewer.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
@@ -53,22 +47,19 @@ public class TableList extends Composite implements IStructuredContentProvider {
 
     }
 
-    private void create(String str) {
-        new TableColumn(viewer.getTable(), SWT.BORDER | SWT.FULL_SELECTION).setText(str);
-    }
-
     public void addUserItem(User user) {
-        TableItem item = new TableItem(viewer.getTable(), SWT.BORDER);
+        TableItem item = new TableItem(viewer.getTable(), SWT.FILL);
         item.setText(0, user.getName());
         item.setText(1, String.valueOf(user.getGroup()));
         item.setText(2, String.valueOf(user.getTaskDone()));
 
     }
 
-    @Override
-    public Object[] getElements(Object inputElement) {
-        String[] titles = { "s", "w", "a" };
-        return titles;
+    private void createColumn(String name, int weight) {
+        TableViewerColumn column = new TableViewerColumn(viewer, SWT.CENTER);
+        column.getColumn().setWidth(weight);
+        column.getColumn().setText(name);
+        column.setLabelProvider(new ColumnLabelProvider());
     }
 
 }

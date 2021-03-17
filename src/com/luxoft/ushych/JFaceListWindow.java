@@ -7,7 +7,7 @@ import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -22,14 +22,17 @@ public class JFaceListWindow extends ApplicationWindow {
 
     @Override
     protected Control createContents(Composite parent) {
-        SashForm mainSash = new SashForm(parent, SWT.FILL);
-        viewController = new ViewController(mainSash);
-        mainSash.setLayout(new FillLayout());
-        parent.pack();
+        SashForm form = new SashForm(parent, SWT.HORIZONTAL);
+        viewController = new ViewController(form);
+        form.setLayout(new FillLayout(SWT.HORIZONTAL));
+        form.setLayoutData(new GridData(GridData.FILL, GridData.FILL, false, false));
+
         getShell().setMenuBar(new MenuBar(getShell()).getMenuBar());
         getShell().setText("JFace homework log");
-        getShell().setSize(800, 400);
-        getShell().setLayout(new GridLayout(1, false));
+        getShell().setSize(700, 500);
+
+
+        getShell().pack();
         return parent;
     }
 
@@ -38,7 +41,6 @@ public class JFaceListWindow extends ApplicationWindow {
         listWindow.setBlockOnOpen(true);
         listWindow.open();
         Display.getCurrent().dispose();
-
     }
 
 }

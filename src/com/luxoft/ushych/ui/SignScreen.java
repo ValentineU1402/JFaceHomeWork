@@ -1,17 +1,21 @@
 package com.luxoft.ushych.ui;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.stream.Stream;
+
 import com.luxoft.ushych.controllers.ViewController;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -22,117 +26,126 @@ public class SignScreen extends Composite {
 
     private ViewController viewController;
 
-    private Text textName;
-    private Text textGroup;
-    private Button buttonCheck;
-
-    private Button newButton;
-    private Button saveButton;
-    private Button deleteButton;
-    private Button cancelButton;
+    private Group groupFields;
+    private Group groupButtons;
 
     public SignScreen(SashForm parent, ViewController controller) {
-        super(parent, SWT.RESIZE);
+        super(parent.getParent(), SWT.NONE);
+        Composite composite = new Composite(parent, SWT.BORDER);
+        composite.setLayout(new FillLayout(SWT.VERTICAL));
+        // composite.setLayout(new GridLayout(1, true));
+        // composite.setLayoutData(new GridData(GridData.FILL, GridData.FILL, false, false));
+        groupFields = new Group(composite, SWT.FILL);
+        groupButtons = new Group(composite, SWT.NONE);
         viewController = controller;
         createComposite();
     }
 
     private void createComposite() {
-        this.setLayout(new FillLayout(SWT.VERTICAL | SWT.FILL));
-        createNameField();
-        createGroupField();
-        createCheckField();
-        createButtonField();
+        Map<String, Integer> fields = new LinkedHashMap<>();
+        fields.put("Name", SWT.NONE);
+        fields.put("Group", SWT.NONE);
+        fields.put("SWT task done", SWT.CHECK);
+        createGroupField(fields);
+        String[] btnTitles = { "New", "Save", "Edit", "Cansel" };
+        createGroupButtons(btnTitles);
     }
 
-    private Group createNameField() {
-        Group nameField = new Group(this, SWT.NONE);
-        nameField.setLayout(new GridLayout(2, true));
-        Label labelName = new Label(nameField, SWT.NONE);
-        labelName.setText("Name");
-        labelName.setLayoutData(getCenterGridDate());
-        textName = new Text(nameField, SWT.LEFT | SWT.BORDER);
-        textName.setLayoutData(getEndGridDate());
-        return nameField;
+    private void createGroupField(Map<String, Integer> fieldParameters) {
+
+        fieldParameters.entrySet().stream().forEach(entry -> {
+            createLabel(entry.getKey());
+            if (entry.getValue() != SWT.CHECK) {
+                createTextField(entry.getKey());
+            } else {
+                new Button(groupFields, SWT.CHECK)
+                        .setLayoutData(new GridData(GridData.FILL, GridData.FILL, false, false));
+            }
+        });
+        // groupFields.setLayout(new FillLayout(SWT.VERTICAL));
+        groupFields.setLayout(new GridLayout(2, false));
+        groupFields.setLayoutData(new GridData(GridData.FILL, GridData.FILL, false, false));
     }
 
-    private Group createGroupField() {
-        Group groupField = new Group(this, SWT.NONE);
-        groupField.setLayout(new GridLayout(2, true));
-        Label labelName = new Label(groupField, SWT.NONE);
-        labelName.setText("Group");
-        labelName.setLayoutData(getCenterGridDate());
-        textGroup = new Text(groupField, SWT.LEFT | SWT.BORDER);
-        textGroup.addListener(SWT.Verify, getFilterDigitListener());
-        textGroup.setLayoutData(getEndGridDate());
-        return groupField;
+    private void createLabel(String text) {
+        Label labelName = new Label(groupFields, SWT.CENTER);
+        labelName.setText(text);
+        labelName.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     }
 
-    private Group createCheckField() {
-        Group checkField = new Group(this, SWT.NONE);
-        checkField.setLayout(new GridLayout(2, true));
-        Label labelName = new Label(checkField, SWT.NONE);
-        labelName.setText("SWT task done");
-        labelName.setLayoutData(getCenterGridDate());
-        buttonCheck = new Button(checkField, SWT.CHECK);
-        buttonCheck.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
-        return checkField;
+    private void createTextField(String title) {
+        Text textName = new Text(groupFields, SWT.BORDER);
+        textName.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        if (title.equalsIgnoreCase("Group")) {
+            textName.addListener(SWT.Verify, getFilterDigitListener());
+        }
     }
 
-    private Group createButtonField() {
-        Group buttonField = new Group(this, SWT.NONE);
-        buttonField.setLayout(new FillLayout());
-        newButton = createButtonNew(buttonField);
-        saveButton = createButtonSave(buttonField);
-        deleteButton = new Button(buttonField, SWT.PUSH);
-        deleteButton.setText("Delete");
-        cancelButton = createButtonCancel(buttonField);
-
-        return buttonField;
+    private void createGroupButtons(String[] titles) {
+        groupButtons.setLayout(new FillLayout(SWT.HORIZONTAL));
+        Stream.of(titles).forEach(str -> createButton(str));
+        groupButtons.pack();
     }
 
-    private Button createButtonNew(Composite parent) {
-        Button result = new Button(parent, SWT.PUSH);
-        result.setText("New");
-        result.addSelectionListener(getSelectionListenerForCancel());
-        return result;
-    }
-
-    private Button createButtonSave(Composite parent) {
-        Button result = new Button(parent, SWT.PUSH);
-        result.setText("Save");
-        result.addSelectionListener(getSelectionListenerForSave());
-        return result;
-    }
-
-    private Button createButtonCancel(Composite parent) {
-        Button result = new Button(parent, SWT.PUSH);
-        result.setText("Cancel");
-        result.addSelectionListener(getSelectionListenerForCancel());
-        return result;
-    }
-
-    private SelectionListener getSelectionListenerForSave() {
-        return new SelectionAdapter() {
+    private Button createButton(String name) {
+        Button btn = new Button(groupButtons, SWT.PUSH);
+        btn.setText(name);
+        btn.setLayoutData(new GridData(GridData.END, GridData.END, true, false));
+        btn.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent arg0) {
-                viewController.addUserParameters(textName.getText(), Integer.parseInt(textGroup.getText()),
-                        buttonCheck.getSelection());
+                switch (name) {
+                case ("New"):
+                    newOrder();
+                    break;
+                case ("Save"):
+                    saveOrder();
+                    break;
+                case ("Edit"):
+                    editOrder();
+                    break;
+                case ("Cansel"):
+                    canselOrder();
+                    break;
+                default:
+                    break;
+                }
             }
 
-        };
+        });
+
+        return btn;
     }
 
-    private SelectionAdapter getSelectionListenerForCancel() {
-        return new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent arg0) {
-                textName.setText("");
-                textGroup.setText("");
-                buttonCheck.setSelection(false);
-            }
+    private void canselOrder() {
 
-        };
+    }
+
+    private void editOrder() {
+        // TODO Auto-generated method stub
+
+    }
+
+    private void saveOrder() {
+        // TODO Auto-generated method stub
+
+    }
+
+    private void newOrder() {
+        Control[] controls = groupFields.getChildren();
+        String[] listContents = new String[controls.length];
+        for (int i = 0; i < controls.length; i++) {
+            if (controls[i] != null) {
+                if (controls[i] instanceof Text) {
+                    listContents[i] = ((Text) controls[i]).getText();
+                }
+                if (controls[i] instanceof Button) {
+                    listContents[i] = String.valueOf(((Button) controls[i]).getSelection());
+                }
+            }
+        }
+        viewController.addUserParameters(listContents[1], Integer.parseInt(listContents[0]),
+                Boolean.parseBoolean(listContents[2]));
     }
 
     private Listener getFilterDigitListener() {
@@ -149,11 +162,4 @@ public class SignScreen extends Composite {
         };
     }
 
-    private GridData getCenterGridDate() {
-        return new GridData(GridData.HORIZONTAL_ALIGN_CENTER | GridData.VERTICAL_ALIGN_FILL);
-    }
-
-    private GridData getEndGridDate() {
-        return new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL);
-    }
 }

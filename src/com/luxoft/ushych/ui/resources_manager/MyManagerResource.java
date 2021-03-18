@@ -1,6 +1,5 @@
 package com.luxoft.ushych.ui.resources_manager;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -18,21 +17,21 @@ public class MyManagerResource {
     }
 
     public Image getCheckImage(boolean element) {
-        URL url = null;
-        try {
-            if (element) {
-                url = new URL("file://C:/Users/valen/eclipse-workspace/workspaceRCP/JFaceHomework/"
-                        + Icons.CHECK_IN.getPath());
-            } else {
-                url = new URL("file://C:/Users/valen/eclipse-workspace/workspaceRCP/JFaceHomework/"
-                        + Icons.CHECK_OFF.getPath());
-            }
-        } catch (MalformedURLException ex) {
-            ex.printStackTrace();
-        }
+        URL url = element ? ClassLoader.getSystemResource(Icons.CHECK_IN.getPath())
+                : ClassLoader.getSystemResource(Icons.CHECK_OFF.getPath());
         ImageDescriptor descriptor = ImageDescriptor.createFromURL(url);
         Image image = resourceManager.createImage(descriptor);
         return image;
+    }
 
+    public boolean checkStatus(Image image) {
+        URL url = ClassLoader.getSystemResource(Icons.CHECK_IN.getPath());
+        ImageDescriptor descriptor = ImageDescriptor.createFromURL(url);
+        Image imageCheckIn = resourceManager.createImage(descriptor);
+        if (image.equals(imageCheckIn)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

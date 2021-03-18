@@ -4,15 +4,15 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.luxoft.ushych.controllers.ViewController;
+import com.luxoft.ushych.ui.resources_manager.MyManagerResource;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
@@ -22,29 +22,22 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
 public class TableList extends Composite {
+    private ViewController viewController;
+
+    private TableViewer tableViewer;
+
+    private MyManagerResource resourceManager;
 
     private final int FIRST_COLUMN_WEIGHT = 300;
     private final int SECOND_COLUMN_WEIGHT = FIRST_COLUMN_WEIGHT / 2;
     private final int THIRD_COLUMN_WEIGHT = SECOND_COLUMN_WEIGHT / 2;
 
-    private ViewController viewController;
-
-    private TableViewer tableViewer;
-
     public TableList(SashForm parent, ViewController controller) {
         super(parent.getParent(), SWT.VERTICAL);
+        this.resourceManager = new MyManagerResource();
         this.viewController = controller;
         tableViewer = new TableViewer(parent, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
-        tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(final SelectionChangedEvent event) {
-
-                IStructuredSelection selection = event.getStructuredSelection();
-                System.out.println(selection);
-                // RowData rowData = (RowData) selection.getFirstElement();
-                // System.out.println(rowData);
-            }
-        });
+        tableViewer.getTable().addSelectionListener(getSelectionAdapter());
 
         Map<String, Integer> titlesColumn = new LinkedHashMap<>();
         titlesColumn.put("Name", FIRST_COLUMN_WEIGHT);
@@ -62,11 +55,12 @@ public class TableList extends Composite {
 
     }
 
-    public void addUserItem(String name, String group, Image image) {
+    public void addUserItem(String name, String group, String taskDone) {
+        Image checkImage = resourceManager.getCheckImage(Boolean.valueOf(taskDone));
         TableItem item = new TableItem(tableViewer.getTable(), SWT.FILL);
         item.setText(0, name);
         item.setText(1, group);
-        item.setImage(2, image);
+        item.setImage(2, checkImage);
 
     }
 
@@ -77,5 +71,18 @@ public class TableList extends Composite {
         column.setLabelProvider(new ColumnLabelProvider());
     }
 
+    private SelectionAdapter getSelectionAdapter() {
+        return new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                TableItem[] selection = ((Table) e.getSource()).getSelection();
+                for (TableItem item : selection) {
+                    viewController.updateFieldsForm(item.getText(0), item.getText(1),
+                            resourceManager.checkStatus(item.getImage(2)));
+
+                }
+            }
+        };
+    }
 
 }

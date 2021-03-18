@@ -1,7 +1,7 @@
 package com.luxoft.ushych.ui.resources_manager;
 
 public enum Icons {
-    CHECK_IN("/resources/checkIn.png"), CHECK_OFF("/resources/checkOn.png");
+    CHECK_IN("checkIn.png"), CHECK_OFF("checkOn.png");
 
     private final String path;
 

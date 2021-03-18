@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.luxoft.ushych.controllers.ViewController;
@@ -17,7 +18,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -41,6 +41,16 @@ public class SignScreen extends Composite {
         groupButtons = new Group(composite, SWT.NONE);
         viewController = controller;
         createComposite();
+
+    }
+
+    public void updateForm(String name, String group, boolean taskDone) {
+        List<Text> listTexts = Stream.of(groupFields.getChildren()).filter(field -> field instanceof Text)
+                .map(field -> (Text) field).collect(Collectors.toList());
+        listTexts.get(0).setText(name);
+        listTexts.get(1).setText(group);
+        Stream.of(groupFields.getChildren()).filter(child -> child instanceof Button).map(btn -> (Button) btn)
+                .forEach(btn -> btn.setSelection(taskDone));
     }
 
     private void createComposite() {
@@ -54,7 +64,6 @@ public class SignScreen extends Composite {
     }
 
     private void createGroupField(Map<String, Integer> fieldParameters) {
-
         fieldParameters.entrySet().stream().forEach(entry -> {
             createLabel(entry.getKey());
             if (entry.getValue() != SWT.CHECK) {
@@ -103,8 +112,8 @@ public class SignScreen extends Composite {
                 case ("Save"):
                     saveOrder();
                     break;
-                case ("Edit"):
-                    editOrder();
+                case ("Delete"):
+                    deleteOrder();
                     break;
                 case ("Cansel"):
                     canselOrder();
@@ -113,7 +122,6 @@ public class SignScreen extends Composite {
                     break;
                 }
             }
-
         });
 
         return btn;
@@ -123,8 +131,7 @@ public class SignScreen extends Composite {
 
     }
 
-    private void editOrder() {
-        // TODO Auto-generated method stub
+    private void deleteOrder() {
 
     }
 
@@ -134,26 +141,20 @@ public class SignScreen extends Composite {
     }
 
     private void newOrder() {
-        Control[] controls = groupFields.getChildren();
         List<String> listContents = new ArrayList<>();
-        for (int i = 0; i < controls.length; i++) {
-            if (controls[i] != null) {
-                if (controls[i] instanceof Text) {
-                    listContents.add(((Text) controls[i]).getText());
-                    ((Text) controls[i]).setText("");
-
+        Stream.of(groupFields.getChildren()).forEach(child -> {
+            if (child != null) {
+                if (child instanceof Text) {
+                    listContents.add(((Text) child).getText());
+                    ((Text) child).setText("");
                 }
-                if (controls[i] instanceof Button) {
-                    listContents.add(String.valueOf(((Button) controls[i]).getSelection()));
-                    ((Button) controls[i]).setText("");
+                if (child instanceof Button) {
+                    listContents.add(String.valueOf(((Button) child).getSelection()));
+                    ((Button) child).setSelection(false);
                 }
             }
-        }
+        });
         viewController.addUserParameters(listContents.get(0), listContents.get(1), listContents.get(2));
-    }
-
-    private void doEmptyField() {
-
     }
 
     private Listener getFilterDigitListener() {

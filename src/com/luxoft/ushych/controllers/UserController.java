@@ -16,6 +16,14 @@ public class UserController {
         usersList.add(user);
     }
 
+    public void updateUser(User oldUser, User newUser) {
+
+    }
+
+    public void removeUser(User user) {
+        usersList.remove(user);
+    }
+
     public List<User> getUsersList() {
         return usersList;
     }

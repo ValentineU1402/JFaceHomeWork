@@ -12,8 +12,6 @@ public class User {
         this.taskDone = taskDone;
     }
 
-
-
     @Override
     public int hashCode() {
         final int prime = 31;

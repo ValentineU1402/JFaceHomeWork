@@ -61,7 +61,24 @@ public class TableList extends Composite {
         item.setText(0, name);
         item.setText(1, group);
         item.setImage(2, checkImage);
+    }
 
+    public void updateSelectionRow(String name, String group, String taskDone) {
+        TableItem[] selection = tableViewer.getTable().getSelection();
+        Image checkImage = resourceManager.getCheckImage(Boolean.valueOf(taskDone));
+        for (TableItem item : selection) {
+            item.setText(0, name);
+            item.setText(1, group);
+            item.setImage(2, checkImage);
+        }
+    }
+
+    public void deleteSelectionItem(boolean status) {
+        TableItem[] selection = tableViewer.getTable().getSelection();
+        for (TableItem item : selection) {
+            viewController.removeUser(item.getText(0), item.getText(1), resourceManager.checkStatus(item.getImage(2)));
+            item.dispose();
+        }
     }
 
     private void createColumn(String name, int weight) {
@@ -84,5 +101,4 @@ public class TableList extends Composite {
             }
         };
     }
-
 }

@@ -21,8 +21,29 @@ public class ViewController {
         this.signScreen = new SignScreen(parent, this);
     }
 
+    public void addUserParameters(String name, String group, String taskDone) {
+        User user = new User(name, group, Boolean.valueOf(taskDone.trim()));
+        userController.addUser(user);
+        table.addUserItem(user.getName(), String.valueOf(user.getGroup()), taskDone);
+    }
+
     public void updateFieldsForm(String name, String group, boolean taskDone) {
         signScreen.updateForm(name, group, taskDone);
+    }
+
+    public void updateUser(String name, String group, String taskDone, User oldUser) {
+        User user = new User(name, group, Boolean.valueOf(taskDone.trim()));
+        userController.updateUser(oldUser, user);
+        table.updateSelectionRow(user.getName(), String.valueOf(user.getGroup()), taskDone);
+    }
+
+    public void deleteSelectionRowTable(boolean status) {
+        userController.removeUser(null);
+        table.deleteSelectionItem(status);
+    }
+
+    public void removeUser(String name, String group, boolean taskDone) {
+        userController.removeUser(new User(name, group, taskDone));
     }
 
     public SignScreen getSignScreen() {
@@ -31,12 +52,6 @@ public class ViewController {
 
     public TableList getTableList() {
         return table;
-    }
-
-    public void addUserParameters(String name, String group, String taskDone) {
-        User user = new User(name, group, Boolean.valueOf(taskDone.trim()));
-        userController.addUser(user);
-        table.addUserItem(user.getName(), String.valueOf(user.getGroup()), taskDone);
     }
 
     public List<User> getUserList() {

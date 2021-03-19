@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.luxoft.ushych.controllers.ViewController;
+import com.luxoft.ushych.models.User;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -31,6 +32,8 @@ public class SignScreen extends Composite {
     private Group groupFields;
     private Group groupButtons;
 
+    private User currentUser;
+
     public SignScreen(SashForm parent, ViewController controller) {
         super(parent.getParent(), SWT.NONE);
         Composite composite = new Composite(parent, SWT.BORDER);
@@ -51,6 +54,7 @@ public class SignScreen extends Composite {
         listTexts.get(1).setText(group);
         Stream.of(groupFields.getChildren()).filter(child -> child instanceof Button).map(btn -> (Button) btn)
                 .forEach(btn -> btn.setSelection(taskDone));
+        this.currentUser = new User(name, group, taskDone);
     }
 
     private void createComposite() {
@@ -73,7 +77,6 @@ public class SignScreen extends Composite {
                         .setLayoutData(new GridData(GridData.END, GridData.FILL, false, false));
             }
         });
-        // groupFields.setLayout(new FillLayout(SWT.VERTICAL));
         groupFields.setLayout(new GridLayout(2, false));
         groupFields.setLayoutData(new GridData(GridData.FILL, GridData.FILL, false, false));
     }
@@ -89,6 +92,8 @@ public class SignScreen extends Composite {
         textName.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         if (title.equalsIgnoreCase("Group")) {
             textName.addListener(SWT.Verify, getFilterDigitListener());
+        } else if (title.equalsIgnoreCase("Name")) {
+            textName.addListener(SWT.Verify, getFilterLatterListener());
         }
     }
 
@@ -110,7 +115,7 @@ public class SignScreen extends Composite {
                     newOrder();
                     break;
                 case ("Save"):
-                    saveOrder();
+                    updateOrder();
                     break;
                 case ("Delete"):
                     deleteOrder();
@@ -128,16 +133,37 @@ public class SignScreen extends Composite {
     }
 
     private void canselOrder() {
-
+        Stream.of(groupFields.getChildren()).forEach(child -> {
+            if (child != null) {
+                if (child instanceof Text) {
+                    ((Text) child).setText("");
+                }
+                if (child instanceof Button) {
+                    ((Button) child).setSelection(false);
+                }
+            }
+        });
     }
 
     private void deleteOrder() {
-
+        viewController.deleteSelectionRowTable(true);
     }
 
-    private void saveOrder() {
-        // TODO Auto-generated method stub
-
+    private void updateOrder() {
+        List<String> listContents = new ArrayList<>();
+        Stream.of(groupFields.getChildren()).forEach(child -> {
+            if (child != null) {
+                if (child instanceof Text) {
+                    listContents.add(((Text) child).getText());
+                    ((Text) child).setText("");
+                }
+                if (child instanceof Button) {
+                    listContents.add(String.valueOf(((Button) child).getSelection()));
+                    ((Button) child).setSelection(false);
+                }
+            }
+        });
+        viewController.updateUser(listContents.get(0), listContents.get(1), listContents.get(2), currentUser);
     }
 
     private void newOrder() {
@@ -163,6 +189,20 @@ public class SignScreen extends Composite {
             public void handleEvent(Event e) {
                 String string = e.text;
                 if (string.matches(".*[^(\\d*)]")) {
+                    e.doit = false;
+                    return;
+                }
+            }
+
+        };
+    }
+
+    private Listener getFilterLatterListener() {
+        return new Listener() {
+            @Override
+            public void handleEvent(Event e) {
+                String string = e.text;
+                if (string.matches(".*[(\\d*)]")) {
                     e.doit = false;
                     return;
                 }

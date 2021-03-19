@@ -32,6 +32,7 @@ public class MenuBar {
         fileMenuItem.setMenu(fileMenu);
         MenuItem item = new MenuItem(fileMenu, SWT.PUSH);
         item.setText("New");
+        item.addSelectionListener(getItemNewListener(parent));
         item = new MenuItem(fileMenu, SWT.PUSH);
         item.setText("Save");
         item.addSelectionListener(getItemSaveListener(parent));
@@ -40,11 +41,11 @@ public class MenuBar {
         item.addSelectionListener(getItemExitListener(parent));
     }
 
-    private SelectionListener getItemExitListener(Decorations parent) {
+    private SelectionListener getItemNewListener(Decorations parent) {
         return new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent arg0) {
-                parent.getDisplay().dispose();
+                controller.doEmptyTableList();
             }
         };
     }
@@ -55,6 +56,15 @@ public class MenuBar {
             public void widgetSelected(SelectionEvent arg0) {
                 boolean answer = MessageDialog.openConfirm(parent.getShell(), "Save", "Do you want to save file?");
                 controller.saveFile(answer);
+            }
+        };
+    }
+
+    private SelectionListener getItemExitListener(Decorations parent) {
+        return new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent arg0) {
+                parent.getDisplay().dispose();
             }
         };
     }

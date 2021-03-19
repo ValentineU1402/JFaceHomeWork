@@ -18,6 +18,10 @@ public class UserController {
 
     private List<User> usersList;
 
+    public UserController() {
+        usersList = new ArrayList<>();
+    }
+
     public UserController(ViewController viewController) {
         usersList = backUpSavedFileOrEmptyList();
         this.viewController = viewController;

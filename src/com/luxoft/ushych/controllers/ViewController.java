@@ -46,6 +46,10 @@ public class ViewController {
         userController.removeUser(new User(name, group, taskDone));
     }
 
+    public void doEmptyTableList() {
+        table.deleteList();
+    }
+
     public void saveFile(boolean answer) {
         if (answer) {
             userController.saveUserToFile();

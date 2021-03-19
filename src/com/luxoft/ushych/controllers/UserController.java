@@ -8,7 +8,7 @@ import com.luxoft.ushych.models.User;
 public class UserController {
 
     private List<User> usersList;
-    
+
     public UserController() {
         usersList = new ArrayList<>();
     }
@@ -18,7 +18,11 @@ public class UserController {
     }
 
     public void updateUser(User oldUser, User newUser) {
-
+        usersList.stream().filter(user -> oldUser.equals(user)).forEach(user -> {
+            user.setName(newUser.getName());
+            user.setGroup(newUser.getGroup());
+            user.setGroup(newUser.getGroup());
+        });
     }
 
     public void removeUser(User user) {

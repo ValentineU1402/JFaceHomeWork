@@ -38,7 +38,22 @@ class UserControllerTest {
     void whenAddSeveral_shouldAddSeveral() {
         userTestList.forEach(user -> controller.addUser(user));
         assertEquals(userTestList.size(), controller.getUsersList().size());
-        // (userTestList.toArray(), controller.getUsersList().toArray());
+    }
+
+    @Test
+    void whenUpdateAllUsers_shouldUpdateAllUsers() {
+        User userTest = new User("Test", "1", false);
+        userTestList.forEach(user -> controller.addUser(user));
+        controller.getUsersList().stream().forEach(user -> controller.updateUser(user, userTest));
+        controller.getUsersList().forEach(user -> assertEquals(user, userTest));
+    }
+
+    @Test
+    void whenRemoveUsers_shouldUserRemove() {
+        userTestList.forEach(user -> controller.addUser(user));
+        userTestList.stream().limit(2).forEach(user -> controller.removeUser(user));
+        assertEquals(userTestList.size() - 2, controller.getUsersList().size());
+
     }
 
 }

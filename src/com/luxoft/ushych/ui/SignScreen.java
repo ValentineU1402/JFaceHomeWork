@@ -153,6 +153,7 @@ public class SignScreen extends Composite {
     }
 
     private void updateOrder() {
+
         if (MessageDialog.openConfirm(this.getShell(), "Save", "Are you sure?")) {
             List<String> listContents = getForUpdateContentList(groupFields.getChildren());
             viewController.updateUser(listContents.get(0), listContents.get(1), listContents.get(2), currentUser);

@@ -16,9 +16,9 @@ public class ViewController {
     private SignScreen signScreen;
 
     public ViewController(SashForm parent) {
-        this.userController = new UserController();
         this.table = new TableList(parent, this);
         this.signScreen = new SignScreen(parent, this);
+        this.userController = new UserController(this);
     }
 
     public void addUserParameters(String name, String group, String taskDone) {
@@ -46,6 +46,12 @@ public class ViewController {
         userController.removeUser(new User(name, group, taskDone));
     }
 
+    public void saveFile(boolean answer) {
+        if (answer) {
+            userController.saveUserToFile();
+        }
+    }
+
     public SignScreen getSignScreen() {
         return signScreen;
     }
@@ -56,5 +62,10 @@ public class ViewController {
 
     public List<User> getUserList() {
         return userController.getUsersList();
+    }
+
+    public void setListUsersOnTable(List<User> usersList) {
+        usersList.stream().forEach(
+                user -> table.addUserItem(user.getName(), user.getGroup(), Boolean.toString(user.getTaskDone())));
     }
 }

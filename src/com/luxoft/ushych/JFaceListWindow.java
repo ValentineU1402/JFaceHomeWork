@@ -27,10 +27,9 @@ public class JFaceListWindow extends ApplicationWindow {
         form.setLayout(new FillLayout(SWT.HORIZONTAL));
         form.setLayoutData(new GridData(GridData.FILL, GridData.FILL, false, false));
 
-        getShell().setMenuBar(new MenuBar(getShell()).getMenuBar());
+        getShell().setMenuBar(new MenuBar(getShell(), viewController).getMenuBar());
         getShell().setText("JFace homework log");
         getShell().setSize(700, 500);
-
 
         getShell().pack();
         return parent;

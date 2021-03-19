@@ -81,6 +81,10 @@ public class TableList extends Composite {
         }
     }
 
+    public void deleteList() {
+        tableViewer.getTable().removeAll();
+    }
+
     private void createColumn(String name, int weight) {
         TableViewerColumn column = new TableViewerColumn(tableViewer, SWT.CENTER);
         column.getColumn().setWidth(weight);

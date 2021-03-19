@@ -1,5 +1,8 @@
 package com.luxoft.ushych.ui;
 
+import com.luxoft.ushych.controllers.ViewController;
+
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -10,10 +13,13 @@ import org.eclipse.swt.widgets.MenuItem;
 
 public class MenuBar {
 
+    private ViewController controller;
+
     private Menu menu;
 
-    public MenuBar(Decorations parent) {
+    public MenuBar(Decorations parent, ViewController controller) {
         menu = new Menu(parent, SWT.BAR);
+        this.controller = controller;
         createFileMenuItem(parent);
         createEditMenuItem(parent);
         createHelpMenuItem(parent);
@@ -24,11 +30,14 @@ public class MenuBar {
         fileMenuItem.setText("File");
         Menu fileMenu = new Menu(parent, SWT.DROP_DOWN);
         fileMenuItem.setMenu(fileMenu);
-        MenuItem itemNew = new MenuItem(fileMenu, SWT.PUSH);
-        itemNew.setText("New");
-        MenuItem itemExit = new MenuItem(fileMenu, SWT.PUSH);
-        itemExit.setText("Exit");
-        itemExit.addSelectionListener(getItemExitListener(parent));
+        MenuItem item = new MenuItem(fileMenu, SWT.PUSH);
+        item.setText("New");
+        item = new MenuItem(fileMenu, SWT.PUSH);
+        item.setText("Save");
+        item.addSelectionListener(getItemSaveListener(parent));
+        item = new MenuItem(fileMenu, SWT.PUSH);
+        item.setText("Exit");
+        item.addSelectionListener(getItemExitListener(parent));
     }
 
     private SelectionListener getItemExitListener(Decorations parent) {
@@ -36,6 +45,16 @@ public class MenuBar {
             @Override
             public void widgetSelected(SelectionEvent arg0) {
                 parent.getDisplay().dispose();
+            }
+        };
+    }
+
+    private SelectionListener getItemSaveListener(Decorations parent) {
+        return new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent arg0) {
+                boolean answer = MessageDialog.openConfirm(parent.getShell(), "Save", "Do you want to save file?");
+                controller.saveFile(answer);
             }
         };
     }

@@ -46,6 +46,18 @@ public class User {
         return true;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    public void setTaskDone(boolean taskDone) {
+        this.taskDone = taskDone;
+    }
+
     public String getName() {
         return name;
     }

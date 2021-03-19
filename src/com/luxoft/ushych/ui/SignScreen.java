@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import com.luxoft.ushych.controllers.ViewController;
 import com.luxoft.ushych.models.User;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -19,6 +20,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -38,8 +40,6 @@ public class SignScreen extends Composite {
         super(parent.getParent(), SWT.NONE);
         Composite composite = new Composite(parent, SWT.BORDER);
         composite.setLayout(new FillLayout(SWT.VERTICAL));
-        // composite.setLayout(new GridLayout(1, true));
-        // composite.setLayoutData(new GridData(GridData.FILL, GridData.FILL, false, false));
         groupFields = new Group(composite, SWT.FILL);
         groupButtons = new Group(composite, SWT.NONE);
         viewController = controller;
@@ -146,33 +146,35 @@ public class SignScreen extends Composite {
     }
 
     private void deleteOrder() {
-        viewController.deleteSelectionRowTable(true);
+        getForUpdateContentList(groupFields.getChildren());
+        if (MessageDialog.openConfirm(this.getShell(), "Save", "Are you sure?")) {
+            viewController.deleteSelectionRowTable(true);
+        }
     }
 
     private void updateOrder() {
-        List<String> listContents = new ArrayList<>();
-        Stream.of(groupFields.getChildren()).forEach(child -> {
-            if (child != null) {
-                if (child instanceof Text) {
-                    listContents.add(((Text) child).getText());
-                    ((Text) child).setText("");
-                }
-                if (child instanceof Button) {
-                    listContents.add(String.valueOf(((Button) child).getSelection()));
-                    ((Button) child).setSelection(false);
-                }
-            }
-        });
-        viewController.updateUser(listContents.get(0), listContents.get(1), listContents.get(2), currentUser);
+        if (MessageDialog.openConfirm(this.getShell(), "Save", "Are you sure?")) {
+            List<String> listContents = getForUpdateContentList(groupFields.getChildren());
+            viewController.updateUser(listContents.get(0), listContents.get(1), listContents.get(2), currentUser);
+        }
     }
 
     private void newOrder() {
+        List<String> listContents = getForUpdateContentList(groupFields.getChildren());
+        viewController.addUserParameters(listContents.get(0), listContents.get(1), listContents.get(2));
+    }
+
+    private List<String> getForUpdateContentList(Control[] controls) {
         List<String> listContents = new ArrayList<>();
-        Stream.of(groupFields.getChildren()).forEach(child -> {
+        Stream.of(controls).forEach(child -> {
             if (child != null) {
                 if (child instanceof Text) {
+                    if (checkEmptyField((Text) child)) {
+                        throw new IllegalArgumentException("Empty field");
+                    }
                     listContents.add(((Text) child).getText());
                     ((Text) child).setText("");
+
                 }
                 if (child instanceof Button) {
                     listContents.add(String.valueOf(((Button) child).getSelection()));
@@ -180,7 +182,16 @@ public class SignScreen extends Composite {
                 }
             }
         });
-        viewController.addUserParameters(listContents.get(0), listContents.get(1), listContents.get(2));
+        return listContents;
+    }
+
+    private boolean checkEmptyField(Text text) {
+        boolean result = false;
+        if (text.getText().isBlank() || text.getText().isEmpty()) {
+            MessageDialog.openInformation(this.getShell(), "Info", "Empty field!");
+            result = true;
+        }
+        return result;
     }
 
     private Listener getFilterDigitListener() {

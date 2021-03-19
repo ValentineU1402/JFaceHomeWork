@@ -6,6 +6,7 @@ import java.util.List;
 import com.luxoft.ushych.models.User;
 
 public class UserController {
+
     private List<User> usersList;
     
     public UserController() {

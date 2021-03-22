@@ -29,8 +29,8 @@ public class TableList extends Composite {
 
     private MyManagerResource resourceManager;
 
-    private final int FIRST_COLUMN_WEIGHT = 250;
-    private final int SECOND_COLUMN_WEIGHT = 200;
+    private final int FIRST_COLUMN_WEIGHT = 300;
+    private final int SECOND_COLUMN_WEIGHT = 220;
     private final int THIRD_COLUMN_WEIGHT = 140;
 
     public TableList(SashForm parent, ViewController controller) {
@@ -55,7 +55,7 @@ public class TableList extends Composite {
 
     public void addUserItem(String name, String group, String taskDone) {
         Image checkImage = resourceManager.getCheckImage(Boolean.valueOf(taskDone));
-        TableItem item = new TableItem(tableViewer.getTable(), SWT.FILL);
+        TableItem item = new TableItem(tableViewer.getTable(), SWT.CENTER);
         item.setText(0, name);
         item.setText(1, group);
         item.setImage(2, checkImage);
@@ -97,7 +97,6 @@ public class TableList extends Composite {
         return new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-
                 Arrays.asList(tableViewer.getTable().getColumns()).stream()
                         .forEach(column -> column.setImage(resourceManager.getArrow(column.getImage())));
                 tableViewer.getTable().getColumns();

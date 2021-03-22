@@ -75,6 +75,7 @@ public class UserController {
         if (comparator instanceof NameComparator) {
             if (sortByName) {
                 Collections.reverse(usersList);
+                sortByName = false;
             } else {
                 sortByName = true;
                 Collections.sort(usersList, comparator);
@@ -83,6 +84,7 @@ public class UserController {
         if (comparator instanceof GroupComparator) {
             if (sortByGroup) {
                 Collections.reverse(usersList);
+                sortByGroup = false;
             } else {
                 sortByGroup = true;
                 Collections.sort(usersList, comparator);
@@ -91,6 +93,7 @@ public class UserController {
         if (comparator instanceof TaskDoneComparator) {
             if (sortByTaskDone) {
                 Collections.reverse(usersList);
+                sortByTaskDone = false;
             } else {
                 sortByTaskDone = true;
                 Collections.sort(usersList, comparator);

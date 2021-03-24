@@ -3,9 +3,6 @@ package com.luxoft.ushych.controllers;
 import java.util.List;
 
 import com.luxoft.ushych.models.User;
-import com.luxoft.ushych.services.GroupComparator;
-import com.luxoft.ushych.services.NameComparator;
-import com.luxoft.ushych.services.TaskDoneComparator;
 import com.luxoft.ushych.ui.SignScreen;
 import com.luxoft.ushych.ui.TableList;
 
@@ -78,19 +75,6 @@ public class ViewController {
     }
 
     public void sortTable(String columnBySort) {
-        switch (columnBySort) {
-        case ("Name"):
-            setListUsersOnTable(userController.getBySort(new NameComparator()));
-            break;
-        case ("Group"):
-            setListUsersOnTable(userController.getBySort(new GroupComparator()));
-            break;
-        case ("SWT done"):
-            setListUsersOnTable(userController.getBySort(new TaskDoneComparator()));
-            break;
-        default:
-            break;
-        }
-
+        setListUsersOnTable(userController.getBySort(columnBySort));
     }
 }

@@ -9,7 +9,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import com.luxoft.ushych.models.User;
@@ -22,6 +21,9 @@ public class UserController {
     private ViewController viewController;
 
     private List<User> usersList;
+
+    private boolean sort;
+
     private boolean sortByName;
     private boolean sortByGroup;
     private boolean sortByTaskDone;
@@ -36,9 +38,12 @@ public class UserController {
         if (!usersList.isEmpty()) {
             viewController.setListUsersOnTable(usersList);
         }
-        this.sortByName = false;
-        this.sortByGroup = false;
-        this.sortByTaskDone = false;
+        this.sort = false;
+
+        sortByName = false;
+        sortByGroup = false;
+        sortByTaskDone = false;
+
     }
 
     public void saveUserToFile() {
@@ -71,40 +76,51 @@ public class UserController {
         usersList.remove(user);
     }
 
-    public List<User> getBySort(Comparator<User> comparator) {
-        if (comparator instanceof NameComparator) {
+
+
+    public List<User> getBySort(String nameColumnTable) {
+        if (nameColumnTable.equals("Name")) {
             if (sortByName) {
                 Collections.reverse(usersList);
                 sortByName = false;
             } else {
                 sortByName = true;
-                Collections.sort(usersList, comparator);
+                usersList.sort(new NameComparator());
             }
-        }
-        if (comparator instanceof GroupComparator) {
+        } else if (nameColumnTable.equals("Group")) {
             if (sortByGroup) {
                 Collections.reverse(usersList);
                 sortByGroup = false;
             } else {
                 sortByGroup = true;
-                Collections.sort(usersList, comparator);
+                usersList.sort(new GroupComparator());
             }
-        }
-        if (comparator instanceof TaskDoneComparator) {
+        } else if (nameColumnTable.equals("SWT done")) {
             if (sortByTaskDone) {
                 Collections.reverse(usersList);
                 sortByTaskDone = false;
             } else {
                 sortByTaskDone = true;
-                Collections.sort(usersList, comparator);
+                usersList.sort(new TaskDoneComparator());
             }
         }
+
         return usersList;
     }
 
     public List<User> getUsersList() {
         return usersList;
     }
+
+    // private void sort(Comparator<User> comparator, Boolean checkSort) {
+    // if (checkSort) {
+    // checkSort = false;
+    // Collections.reverse(usersList);
+    // } else {
+    // checkSort = true;
+    // usersList.sort(comparator);
+    // }
+    // }
 
     private ArrayList<User> backUpSavedFileOrEmptyList() {
         try {

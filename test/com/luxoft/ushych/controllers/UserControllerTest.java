@@ -29,11 +29,8 @@ class UserControllerTest {
     @BeforeEach
     void setUp() {
         controller = new UserController();
-        expectedUser = new User("Tom", "32", false);
-        expectedUserList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            expectedUserList.add(new User("Tom" + i, "32" + i, false));
-        }
+        expectedUser = new User("Tom", 32, false);
+        expectedUserList = createExpectedUserList();
         nameCompare = getNameComparator();
         groupCompare = getGroupComparator();
         taskDoneCompare = getTaskDoneComparator();
@@ -53,7 +50,7 @@ class UserControllerTest {
 
     @Test
     void whenUpdateAllUsers_shouldUpdateAllUsers() {
-        User userTest = new User("Test", "1", false);
+        User userTest = new User("Test", 1, false);
         expectedUserList.forEach(user -> controller.addUser(user));
         controller.getUsersList().stream().forEach(user -> controller.updateUser(user, userTest));
         assertArrayEquals(ARRAY_EQUALS_STRING, expectedUserList.toArray(), controller.getUsersList().toArray());
@@ -87,43 +84,38 @@ class UserControllerTest {
         expectedUserList.forEach(user -> controller.addUser(user));
         controller.getBySort("SWT done");
         Collections.sort(expectedUserList, taskDoneCompare);
-        assertArrayEquals(ARRAY_EQUALS_STRING, expectedUserList.toArray(), controller.getUsersList().toArray());
+        List<User> actual = controller.getUsersList();
+        assertArrayEquals(ARRAY_EQUALS_STRING, expectedUserList.toArray(), actual.toArray());
+    }
+
+    private List<User> createExpectedUserList() {
+        List<User> result = new ArrayList<>();
+        result.add(new User("Valentyn", 1, true));
+        result.add(new User("Andry", 2, false));
+        result.add(new User("Tom", 3, true));
+        result.add(new User("Eliza", 2, true));
+        result.add(new User("Mary", 1, false));
+        result.add(new User("Karl", 1, true));
+        result.add(new User("Stive", 3, false));
+        result.add(new User("Sem", 2, true));
+        result.add(new User("Eugeniy", 1, false));
+        result.add(new User("Dima", 3, false));
+        result.add(new User("Ronn", 2, true));
+
+        return result;
+
     }
 
     private Comparator<User> getNameComparator() {
-        return new Comparator<User>() {
-            @Override
-            public int compare(User o1, User o2) {
-                return o1.getName().compareToIgnoreCase(o2.getName());
-            }
-        };
+        return Comparator.comparing(User::getName);
     }
 
     private Comparator<User> getGroupComparator() {
-        return new Comparator<User>() {
-            @Override
-            public int compare(User o1, User o2) {
-                int firstGroup = Integer.parseInt(o1.getGroup());
-                int secondGroup = Integer.parseInt(o2.getGroup());
-                return firstGroup > secondGroup ? 1 : firstGroup == secondGroup ? 0 : -1;
-            }
-        };
+        return Comparator.comparing(User::getGroup);
     }
 
     private Comparator<User> getTaskDoneComparator() {
-        return new Comparator<User>() {
-            @Override
-            public int compare(User o1, User o2) {
-                int i = o1.getTaskDone() == true && o2.getTaskDone() == false ? -1
-                        : o1.getTaskDone() == true && o2.getTaskDone() == true ? 0
-                                : o1.getTaskDone() == false && o2.getTaskDone() == false ? 0 : 1;
-                if (i == 0) {
-                    i = o1.getName().compareToIgnoreCase(o2.getName());
-                }
-                return i;
-
-            }
-        };
+        return Comparator.comparing(User::getTaskDone);
     }
 
 }

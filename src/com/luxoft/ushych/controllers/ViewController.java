@@ -53,9 +53,9 @@ public class ViewController {
      * @see User
      */
     public void addUserParameters(String name, String group, boolean taskDone) {
-        User user = new User(name, group, taskDone);
+        User user = new User(name, Integer.parseInt(group), taskDone);
         userController.addUser(user);
-        tableList.addUserItem(user.getName(), user.getGroup(), taskDone);
+        tableList.addUserItem(user.getName(), user.getGroup().toString(), taskDone);
     }
 
     /**
@@ -84,9 +84,9 @@ public class ViewController {
      * @see User
      */
     public void updateUser(String name, String group, boolean taskDone, User oldUser) {
-        User user = new User(name, group, taskDone);
+        User user = new User(name, Integer.parseInt(group), taskDone);
         userController.updateUser(oldUser, user);
-        tableList.updateSelectionRow(user.getName(), user.getGroup(), taskDone);
+        tableList.updateSelectionRow(user.getName(), user.getGroup().toString(), taskDone);
     }
 
      /**
@@ -110,7 +110,7 @@ public class ViewController {
      * @see TableList
      */
     public void removeUser(String name, String group, boolean taskDone) {
-        userController.removeUser(new User(name, group, taskDone));
+        userController.removeUser(new User(name, Integer.parseInt(group), taskDone));
     }
 
     /**
@@ -143,12 +143,11 @@ public class ViewController {
      * @see TableList
      * @see UserController
      * @see User
-     * 
      */
     public void setListUsersOnTable(List<User> usersList) {
         doEmptyTableList();
         usersList.stream().forEach(
-                user -> tableList.addUserItem(user.getName(), user.getGroup(), user.getTaskDone()));
+                user -> tableList.addUserItem(user.getName(), user.getGroup().toString(), user.getTaskDone()));
     }
 
     /**

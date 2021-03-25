@@ -76,7 +76,7 @@ public class SignScreen extends Composite {
         listTexts.get(1).setText(group);
         Stream.of(groupFields.getChildren()).filter(child -> child instanceof Button).map(btn -> (Button) btn)
                 .forEach(btn -> btn.setSelection(taskDone));
-        this.currentUser = new User(name, group, taskDone);
+        this.currentUser = new User(name, Integer.parseInt(group), taskDone);
     }
 
     private void createComposite() {

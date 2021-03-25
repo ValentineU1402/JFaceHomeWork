@@ -10,8 +10,6 @@ import org.eclipse.swt.widgets.Display;
 
 public class JFaceListWindow extends ApplicationWindow {
 
-    private ViewController viewController;
-
     public JFaceListWindow() {
         super(null);
     }

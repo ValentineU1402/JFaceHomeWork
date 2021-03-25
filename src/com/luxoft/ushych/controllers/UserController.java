@@ -8,12 +8,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import com.luxoft.ushych.models.User;
-import com.luxoft.ushych.services.GroupComparator;
-import com.luxoft.ushych.services.NameComparator;
-import com.luxoft.ushych.services.TaskDoneComparator;
 
 /**
  * The UserController is controller of item`s users
@@ -22,17 +20,10 @@ import com.luxoft.ushych.services.TaskDoneComparator;
  */
 public class UserController {
 
+    @SuppressWarnings("unused")
     private ViewController controller;
 
     private List<User> usersList;
-
-    private boolean sortByName;
-    private boolean sortByGroup;
-    private boolean sortByTaskDone;
-
-    // private Boolean sortByName;
-    // private Boolean sortByGroup;
-    // private Boolean sortByTaskDone;
     /**
      * Instance without parameters that create empty List<User>
      *
@@ -56,10 +47,6 @@ public class UserController {
         if (!usersList.isEmpty()) {
             controller.setListUsersOnTable(usersList);
         }
-        sortByName = false;
-        sortByGroup = false;
-        sortByTaskDone = false;
-
     }
 
     /**
@@ -116,46 +103,22 @@ public class UserController {
      */
     public List<User> getBySort(String nameColumnTable) {
         if (nameColumnTable.equals("Name")) {
-            // sort(new NameComparator(), sortByName);
-            if (sortByName) {
-                Collections.reverse(usersList);
-                sortByName = false;
-            } else {
-                sortByName = true;
-                usersList.sort(new NameComparator());
-            }
+            sort(Comparator.comparing(User::getName));
         } else if (nameColumnTable.equals("Group")) {
-            // sort(new GroupComparator(), sortByGroup);
-            if (sortByGroup) {
-                Collections.reverse(usersList);
-                sortByGroup = false;
-            } else {
-                sortByGroup = true;
-                usersList.sort(new GroupComparator());
-            }
+            sort(Comparator.comparing(User::getGroup));
         } else if (nameColumnTable.equals("SWT done")) {
-            // sort(new TaskDoneComparator(), sortByTaskDone);
-            if (sortByTaskDone) {
-                Collections.reverse(usersList);
-                sortByTaskDone = false;
-            } else {
-                sortByTaskDone = true;
-                usersList.sort(new TaskDoneComparator());
-            }
+            sort(Comparator.comparing(User::getTaskDone));
         }
         return usersList;
     }
 
-    // private void sort(Comparator<User> comparator, Boolean checkSort) {
-    // System.out.println(checkSort == sortByTaskDone);
-    // if (checkSort) {
-    // checkSort = false;
-    // Collections.reverse(usersList);
-    // } else {
-    // checkSort = true;
-    // usersList.sort(comparator);
-    // }
-    // }
+    private void sort(Comparator<User> comparator) {
+        if (isSortedByComparator(comparator)) {
+            Collections.reverse(usersList);
+        } else {
+            Collections.sort(usersList, comparator);
+        }
+    }
 
     /**
      * Return current user list
@@ -166,17 +129,19 @@ public class UserController {
         return usersList;
     }
 
+    @SuppressWarnings("unchecked")
     private ArrayList<User> backUpSavedFileOrEmptyList() {
-        try {
-            FileInputStream fileInputStream;
-
-            fileInputStream = new FileInputStream("save.ser");
-
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-
+        try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream("save.ser"))) {
             return (ArrayList<User>) objectInputStream.readObject();
         } catch (IOException | ClassNotFoundException ex) {
             return new ArrayList<>();
         }
+    }
+
+    private boolean isSortedByComparator(Comparator<User> comparator) {
+        List<User> checkList = new ArrayList<>();
+        checkList.addAll(usersList);
+        Collections.sort(checkList, comparator);
+        return usersList.equals(checkList);
     }
 }

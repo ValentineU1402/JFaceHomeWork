@@ -4,11 +4,12 @@ import java.io.Serializable;
 
 public class User implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private String name;
-    private String group;
+    private Integer group;
     private boolean taskDone;
 
-    public User(String name, String group, boolean taskDone) {
+    public User(String name, Integer group, boolean taskDone) {
         this.name = name;
         this.group = group;
         this.taskDone = taskDone;
@@ -52,7 +53,7 @@ public class User implements Serializable {
         this.name = name;
     }
 
-    public void setGroup(String group) {
+    public void setGroup(Integer group) {
         this.group = group;
     }
 
@@ -64,7 +65,7 @@ public class User implements Serializable {
         return name;
     }
 
-    public String getGroup() {
+    public Integer getGroup() {
         return group;
     }
 

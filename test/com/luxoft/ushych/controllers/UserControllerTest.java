@@ -9,7 +9,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.luxoft.ushych.models.User;
-import com.luxoft.ushych.services.NameComparator;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,6 +23,8 @@ class UserControllerTest {
     private Comparator<User> nameCompare;
     private Comparator<User> groupCompare;
     private Comparator<User> taskDoneCompare;
+
+    private final String ARRAY_EQUALS_STRING = "Different array item";
 
     @BeforeEach
     void setUp() {
@@ -41,14 +42,13 @@ class UserControllerTest {
     @Test
     void whenAddOneUser_shouldAddOneUser() {
         controller.addUser(expectedUser);
-        assertEquals(1, controller.getUsersList().size());
-        assertEquals(expectedUser, controller.getUsersList().get(0));
+        assertEquals(expectedUser, controller.getUsersList().get(0), "Different element");
     }
 
     @Test
     void whenAddSeveral_shouldAddSeveral() {
         expectedUserList.forEach(user -> controller.addUser(user));
-        assertEquals(expectedUserList.size(), controller.getUsersList().size());
+        assertArrayEquals(ARRAY_EQUALS_STRING, expectedUserList.toArray(), controller.getUsersList().toArray());
     }
 
     @Test
@@ -56,38 +56,38 @@ class UserControllerTest {
         User userTest = new User("Test", "1", false);
         expectedUserList.forEach(user -> controller.addUser(user));
         controller.getUsersList().stream().forEach(user -> controller.updateUser(user, userTest));
-        controller.getUsersList().forEach(user -> assertEquals(user, userTest));
+        assertArrayEquals(ARRAY_EQUALS_STRING, expectedUserList.toArray(), controller.getUsersList().toArray());
     }
 
     @Test
     void whenRemoveUsers_shouldUserRemove() {
         expectedUserList.forEach(user -> controller.addUser(user));
         expectedUserList.stream().limit(2).forEach(user -> controller.removeUser(user));
-        assertEquals(expectedUserList.size() - 2, controller.getUsersList().size());
+        assertEquals(expectedUserList.size() - 2, controller.getUsersList().size(), "Diferent array size");
     }
 
     @Test
     void whenSortUserByName_shouldUserSort() {
         expectedUserList.forEach(user -> controller.addUser(user));
-        controller.getBySort(new NameComparator());
+        controller.getBySort("Name");
         Collections.sort(expectedUserList, nameCompare);
-        assertArrayEquals(expectedUserList.toArray(), controller.getUsersList().toArray());
+        assertArrayEquals(ARRAY_EQUALS_STRING, expectedUserList.toArray(), controller.getUsersList().toArray());
     }
 
     @Test
     void whenSortUserByGroup_shouldUserSort() {
         expectedUserList.forEach(user -> controller.addUser(user));
-        controller.getBySort(new NameComparator());
+        controller.getBySort("Group");
         Collections.sort(expectedUserList, groupCompare);
-        assertArrayEquals(expectedUserList.toArray(), controller.getUsersList().toArray());
+        assertArrayEquals(ARRAY_EQUALS_STRING, expectedUserList.toArray(), controller.getUsersList().toArray());
     }
 
     @Test
     void whenSortUserByTaskDone_shouldUserSort() {
         expectedUserList.forEach(user -> controller.addUser(user));
-        controller.getBySort(new NameComparator());
+        controller.getBySort("SWT done");
         Collections.sort(expectedUserList, taskDoneCompare);
-        assertArrayEquals(expectedUserList.toArray(), controller.getUsersList().toArray());
+        assertArrayEquals(ARRAY_EQUALS_STRING, expectedUserList.toArray(), controller.getUsersList().toArray());
     }
 
     private Comparator<User> getNameComparator() {

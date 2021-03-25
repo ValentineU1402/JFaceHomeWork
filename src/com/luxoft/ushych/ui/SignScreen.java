@@ -27,6 +27,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
+/**
+ * The SignScreen is composite on application that provide control to fill fields on form
+ *
+ * @author vushych@luxoft.com
+ * @see Composite
+ * @see ViewController
+ */
 public class SignScreen extends Composite {
 
     private ViewController viewController;
@@ -36,6 +43,14 @@ public class SignScreen extends Composite {
 
     private User currentUser;
 
+    /**
+     * View editable form panel of application
+     *
+     * @param parent the SashForm element that may resize internal element
+     * @param controller ViewController is controller element on the display
+     * @see SashForm
+     * @see ViewController
+     */
     public SignScreen(SashForm parent, ViewController controller) {
         super(parent.getParent(), SWT.NONE);
         Composite composite = new Composite(parent, SWT.BORDER);
@@ -47,7 +62,14 @@ public class SignScreen extends Composite {
 
     }
 
-    public void updateForm(String name, String group, boolean taskDone) {
+    /**
+     * Filling empty field of form
+     *
+     * @param name value for a name field
+     * @param group value for a group field
+     * @param taskDone check for checkBox element
+     */
+    public void fillForm(String name, String group, boolean taskDone) {
         List<Text> listTexts = Stream.of(groupFields.getChildren()).filter(field -> field instanceof Text)
                 .map(field -> (Text) field).collect(Collectors.toList());
         listTexts.get(0).setText(name);
@@ -155,13 +177,15 @@ public class SignScreen extends Composite {
     private void updateOrder() {
         if (MessageDialog.openConfirm(this.getShell(), "Save", "Are you sure?")) {
             List<String> listContents = getForUpdateContentList(groupFields.getChildren());
-            viewController.updateUser(listContents.get(0), listContents.get(1), listContents.get(2), currentUser);
+            viewController.updateUser(listContents.get(0), listContents.get(1), Boolean.valueOf(listContents.get(2)),
+                    currentUser);
         }
     }
 
     private void newOrder() {
         List<String> listContents = getForUpdateContentList(groupFields.getChildren());
-        viewController.addUserParameters(listContents.get(0), listContents.get(1), listContents.get(2));
+        viewController.addUserParameters(listContents.get(0), listContents.get(1),
+                Boolean.valueOf(listContents.get(2)));
     }
 
     private List<String> getForUpdateContentList(Control[] controls) {

@@ -11,12 +11,28 @@ import org.eclipse.swt.widgets.Decorations;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
+/**
+ * Constructs a new instance of this class for provide view of tool bar on the main display
+ *
+ * @author vushych@luxoft.com
+ * 
+ * @see Menu
+ */
 public class MenuBar {
 
     private ViewController controller;
 
     private Menu menu;
 
+    /**
+     * Instances of this class provide view of tool bar on the main display
+     * 
+     * @param parent instances of this class provide the appearance and behavior of <code>Shells</code>, but are not top
+     *        level shells or dialogs.
+     * @param controller ViewController is controller element on the display
+     * 
+     * @see ViewController
+     */
     public MenuBar(Decorations parent, ViewController controller) {
         menu = new Menu(parent, SWT.BAR);
         this.controller = controller;

@@ -1,5 +1,10 @@
-package com.luxoft.ushych.ui.resources_manager;
+package com.luxoft.ushych.ui.resources;
 
+/**
+ * Each enum contains file name into resources folder on the project
+ *
+ * @author vushych@luxoft.com
+ */
 public enum Icons {
     CHECK_IN("checkIn.png"),
     CHECK_OFF("checkOn.png"),

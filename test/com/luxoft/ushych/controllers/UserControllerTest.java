@@ -72,6 +72,16 @@ class UserControllerTest {
     }
 
     @Test
+    void whenSortUserByNameTwice_shouldUserSortReverse() {
+        expectedUserList.forEach(user -> controller.addUser(user));
+        controller.getBySort("Name");
+        controller.getBySort("Name");
+        Collections.sort(expectedUserList, nameCompare);
+        Collections.reverse(expectedUserList);
+        assertArrayEquals(ARRAY_EQUALS_STRING, expectedUserList.toArray(), controller.getUsersList().toArray());
+    }
+
+    @Test
     void whenSortUserByGroup_shouldUserSort() {
         expectedUserList.forEach(user -> controller.addUser(user));
         controller.getBySort("Group");
@@ -80,12 +90,31 @@ class UserControllerTest {
     }
 
     @Test
+    void whenSortUserByGroupTwice_shouldUserSortReverse() {
+        expectedUserList.forEach(user -> controller.addUser(user));
+        controller.getBySort("Group");
+        controller.getBySort("Group");
+        Collections.sort(expectedUserList, groupCompare);
+        Collections.reverse(expectedUserList);
+        assertArrayEquals(ARRAY_EQUALS_STRING, expectedUserList.toArray(), controller.getUsersList().toArray());
+    }
+
+    @Test
     void whenSortUserByTaskDone_shouldUserSort() {
         expectedUserList.forEach(user -> controller.addUser(user));
         controller.getBySort("SWT done");
         Collections.sort(expectedUserList, taskDoneCompare);
-        List<User> actual = controller.getUsersList();
-        assertArrayEquals(ARRAY_EQUALS_STRING, expectedUserList.toArray(), actual.toArray());
+        assertArrayEquals(ARRAY_EQUALS_STRING, expectedUserList.toArray(), controller.getUsersList().toArray());
+    }
+
+    @Test
+    void whenSortUserByTaskDoneTwise_shouldUserSortReverse() {
+        expectedUserList.forEach(user -> controller.addUser(user));
+        controller.getBySort("SWT done");
+        controller.getBySort("SWT done");
+        Collections.sort(expectedUserList, taskDoneCompare);
+        Collections.reverse(expectedUserList);
+        assertArrayEquals(ARRAY_EQUALS_STRING, expectedUserList.toArray(), controller.getUsersList().toArray());
     }
 
     private List<User> createExpectedUserList() {

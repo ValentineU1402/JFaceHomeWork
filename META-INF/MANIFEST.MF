@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %Bundle-Name
+Bundle-SymbolicName: JFaceHomework;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Automatic-Module-Name: JFaceHomework
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Export-Package: com.luxoft.ushych,
+ com.luxoft.ushych.controllers,
+ com.luxoft.ushych.models,
+ com.luxoft.ushych.ui
+Require-Bundle: org.eclipse.jface;bundle-version="3.22.0",
+ org.junit.jupiter.api;bundle-version="5.7.0",
+ javax.xml.bind;bundle-version="2.2.0",
+ org.eclipse.core.commands.source;bundle-version="3.9.800",
+ org.eclipse.equinox.common;bundle-version="3.14.0",
+ org.eclipse.osgi;bundle-version="3.16.100",
+ org.eclipse.ui.workbench;bundle-version="3.122.0"
+ 
